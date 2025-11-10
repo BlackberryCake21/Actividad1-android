@@ -29,8 +29,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MiAplicacionTheme {
-
-
+                App()
             }
         }
     }
