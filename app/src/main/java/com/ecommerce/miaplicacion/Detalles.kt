@@ -53,10 +53,18 @@ import androidx.navigation.NavController
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
+// Composable que representa la pantalla de detalle
+// Recibe los parámetros que fueron pasados desde la pantalla anterior: imagen, título y descripción
 @Composable
-fun detalle(navController: NavController,imagen: Int,titulo: String,descripcion: String) {
+fun detalle(navController: NavController, imagen: Int, titulo: String, descripcion: String) {
+
+    // Variable de estado que controla si se muestra el diálogo (imagen ampliada)
     var mostrarDialogo by remember { mutableStateOf(false) }
+
+    // Estructura principal de la pantalla con barras superior e inferior
     Scaffold(
+
+        // Barra superior con el título recibido por parámetro
         topBar = {
             TopAppBar(
                 title = { Text(titulo) },
@@ -66,55 +74,65 @@ fun detalle(navController: NavController,imagen: Int,titulo: String,descripcion:
                 )
             )
         },
+
+        // Barra inferior con un botón para volver atrás
         bottomBar = {
             BottomAppBar(
                 containerColor = MaterialTheme.colorScheme.surfaceVariant,
                 contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier
-                    .height(100.dp)
+                modifier = Modifier.height(100.dp)
             ) {
+                // Contenedor centrado para el botón "Volver"
                 Box(
-                    modifier = Modifier
-                        .fillMaxSize(),
+                    modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
-                ){
+                ) {
                     Button(
-                        onClick = { navController.popBackStack()},
+                        // Al presionar, se quita la pantalla actual del stack de navegación
+                        onClick = { navController.popBackStack() },
                     ) {
                         Text("Volver")
                     }
-
                 }
             }
         },
+
+        // Color de fondo del Scaffold
         containerColor = MaterialTheme.colorScheme.background,
 
-    ) {
+    ) { // Contenido principal de la pantalla
+
+        // Lista vertical que permite desplazamiento (aunque haya solo un elemento)
         LazyColumn(
             Modifier
                 .fillMaxSize()
                 .background(color = MaterialTheme.colorScheme.surface)
         ) {
+            // Primer elemento: imagen principal
             item {
                 Box(
                     modifier = Modifier
                         .width(400.dp)
-                        .padding(top = 120.dp)
-                    ,
+                        .padding(top = 120.dp),
                     contentAlignment = Alignment.Center
                 ) {
+                    // Muestra la imagen circular
                     Image(
                         painter = painterResource(id = imagen),
-                        "Primera imagen",
+                        contentDescription = "Primera imagen",
                         contentScale = ContentScale.FillWidth,
                         modifier = Modifier
-                            .clip(CircleShape)
+                            .clip(CircleShape) // Imagen redondeada
                             .size(250.dp)
+                            // Al hacer clic sobre la imagen, se abre el diálogo con la imagen ampliada
                             .clickable { mostrarDialogo = true }
                     )
                 }
             }
+
+            // Segundo elemento: texto descriptivo y diálogo emergente
             item {
+                // Muestra la descripción debajo de la imagen
                 Text(
                     text = descripcion,
                     color = Color.White,
@@ -122,21 +140,25 @@ fun detalle(navController: NavController,imagen: Int,titulo: String,descripcion:
                         .fillMaxWidth()
                         .padding(start = 30.dp, top = 30.dp, bottom = 100.dp, end = 30.dp)
                 )
+
+                // Si 'mostrarDialogo' es true, se muestra el diálogo con la imagen ampliada
                 if (mostrarDialogo) {
                     Dialog(onDismissRequest = { mostrarDialogo = false }) {
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
+                                // Si se toca fuera del área de la imagen, el diálogo se cierra
                                 .clickable { mostrarDialogo = false },
                             contentAlignment = Alignment.Center,
-                            ) {
+                        ) {
+                            // Imagen ampliada en el centro del diálogo
                             Image(
                                 painter = painterResource(id = imagen),
                                 contentDescription = titulo,
                                 contentScale = ContentScale.Fit,
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .clip(RoundedCornerShape(12.dp))
+                                    .clip(RoundedCornerShape(12.dp)) // Bordes redondeados
                             )
                         }
                     }
